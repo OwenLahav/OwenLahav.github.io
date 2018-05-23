@@ -1,0 +1,118 @@
+<html>
+
+  <link rel="stylesheet" href="Styles.css">
+  <!--link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <!--link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <head>
+ <h1>
+  Machine Learning Interpretability Study
+ </h1>
+</head>
+  <body>
+    <h3>Details</h3>
+  <p>
+    Thank you for participating in our study. It has been approved by ethics committee... </br>
+    The purpose of the study is the ascertain users' comfort with different machine learning models given various forms of evidence, interpretations, and representations.
+  </p>
+    <h3>Instructions:</h3>
+  <p>
+    Please assess your level of comfort utilizing the models described to the best of your ability after each question
+  </p>
+
+  <h3><b>Part 1:</b> Background</h3>
+  <p>Please indicate your program and level of study</p>
+
+  <p>
+      <input type="radio" name="Context" value="0"/>Medical (or related), Undergraduate<br />
+      <input type="radio" name="Context" value="1"/>Medical (or related), Postgraduate<br />
+      <input type="radio" name="Context" value="2"/>Mathematics, Statistics, Computer Science (or related), Undergraduate<br />
+      <input type="radio" name="Context" value="3"/>Mathematics, Statistics, Computer Science (or related), Postgraduate<br />
+      <input type="radio" name="Context" value="4"/>Other<br /><br />
+      <input type="submit" value="Next" class="Submit1"/><br /><br />
+
+  </p>
+
+  <p class = "Q1v2">
+    <ul>
+      <span class='Q1A' class='Q1A1'><span class='fa fa-circle-o'></span>Medical (or related), Undergraduate</span><br />
+      <span class='Q1A' class='Q1A2'><span class='fa fa-circle-o'></span>Medical (or related), Postgraduate</span><br />
+      <span class='Q1A' class='Q1A3'><span class='fa fa-circle-o'></span>Mathematics, Statistics, Computer Science (or related), Undergraduate</span><br />
+      <span class='Q1A' class='Q1A4'><span class='fa fa-circle-o'></span>Mathematics, Statistics, Computer Science (or related), Postgraduate</span><br />
+      <span class='Q1A' class='Q1A5'><span class='fa fa-circle-o'></span>Other</span><br />
+    </ul>
+
+  </p>
+
+<div class="LinearModel">
+  <h3><b>Part 2:</b> Linear Model</h3>
+  <p>The following questions pertain to a linear regression model that uses various features to predict X.<br />
+      Please examine the following in order and assess your level of comfort of utilizing the model for predictive purposes after each step.</p>
+
+</div>
+
+<!-------- Quiz Starts Here -------->
+<h3>My Quiz</h3>
+Introduction paragraph here
+<form action="http://www.quizbox.com/builder/result.aspx?max=0&q=10" method="post">
+<input type="hidden" name="QuizTitle" value="My Quiz" />
+<input type="hidden" name="QuizReturnLink" value="http://www.quizbox.com/builder/" />
+<ol>
+<li>Type your question1 here.</li><br />
+<input type="radio" name="ans1" value="0"/>choice1<br />
+<input type="radio" name="ans1" value="0"/>choice2<br />
+<input type="radio" name="ans1" value="0"/>choice3<br />
+<input type="radio" name="ans1" value="0"/>choice4<br />
+<input type="radio" name="ans1" value="0"/>choice5<br /><br />
+
+<li>Type your question2 here.</li><br />
+<input type="radio" name="ans2" value="0"/>choice1<br />
+<input type="radio" name="ans2" value="0"/>choice2<br />
+<input type="radio" name="ans2" value="0"/>choice3<br />
+<input type="radio" name="ans2" value="0"/>choice4<br />
+<input type="radio" name="ans2" value="0"/>choice5<br /><br />
+
+<p><input type="submit" value="Grade Me" onclick="this.value='Please wait...'" /></p>
+</form>
+<!-------- Quiz Ends Here -------->
+
+
+  </body>
+  
+  <!-- Include jQuery below this line -->
+  <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script-->
+  <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('.LinearModel').hide();
+
+      $('ul').on('click', function() {
+      var checkCircle = $(this).find('.Q1A','.fa');
+      var uncheckCircle = $(this).find('.fa');
+      //uncheckCircle.removeClass("fa-check-circle-o");
+      //uncheckCircle.addClass("fa-circle-o");
+      checkCircle.toggleClass("fa-check-circle-o fa-circle-o");
+      })
+
+      //$('ul').on('click', '.Q1A', function() {
+      //var checkCircle = $(this).find('.fa');
+      //checkCircle.toggleClass("fa-check-circle-o fa-circle-o");
+      //})
+
+      $('.Submit1').on('click',function() {
+        var A1 = $('.Context').attr()
+        console.log(A1)
+
+        $('.LinearModel').show()
+        });
+
+
+    })
+
+    //refbox = 0
+    //if (Math.random() > 0.5) {let refbox = 1}
+  </script>
+
+</html>
