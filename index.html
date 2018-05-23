@@ -30,6 +30,22 @@
 </div>
  
 <!--CODE-->
+
+<!--Setup Firebase-->
+<script src="https://www.gstatic.com/firebasejs/5.0.3/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB5DNbkl5r89znyaXsvBB7l74tr074anQg",
+    authDomain: "interpretabilitytry1.firebaseapp.com",
+    databaseURL: "https://interpretabilitytry1.firebaseio.com",
+    projectId: "interpretabilitytry1",
+    storageBucket: "",
+    messagingSenderId: "491312211327"
+  };
+  firebase.initializeApp(config);
+</script>
+
 <!--Download jQuery-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
@@ -241,6 +257,11 @@
                 {
                     $('.finished').show();
                     console.log(dataReturn)
+
+                    //Also push it to Firebase!
+                    var dbRef = firebase.database().ref();
+                    dbRef.push(dataReturn);
+
                     foundNextQuestion = true;
                 }
 
