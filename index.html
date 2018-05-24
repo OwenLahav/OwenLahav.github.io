@@ -259,7 +259,7 @@
                     console.log(dataReturn)
 
                     //Also push it to Firebase!
-                    var dbRef = firebase.database().ref();
+                    var dbRef = firebase.database().ref('Results');
                     dbRef.push(dataReturn);
 
                     foundNextQuestion = true;
