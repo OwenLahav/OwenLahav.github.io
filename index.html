@@ -19,9 +19,21 @@
     <h3>Instructions:</h3>
   <p>
     Please assess your level of comfort utilizing the models described to the best of your ability after each question, and answer the comprehension question at the end of each section.
+    <b>Please do not use the back/forward or refresh buttons once you have started the quiz.</b>
   </p>
  </div>
+
+ <div class = 'enterEmail'>
+     <h3>Authentication</h3>
+     <p>Please enter your email below:</p>
+     <form class='emailForm'>
+            <input class='form-control input-lg' type='text' placeholder='Enter email address...'>
+     </form>
+     <p><b>Note:</b> Your email will <b>only</b> be used for authentication purposes and will not be retained beyond the purposes of this study.</p>
+ </div>
+
  <div id = 'Rest'></div>
+
  <div class = 'finished'>
      <h3>Finished!!!</h3>
     <p>
@@ -113,6 +125,11 @@
     };
 
     var parts = [part1, part2, part3];
+    var questionCodes = [
+        {qCode: 1,display: [1,1,1,1],prob: 0.4},
+        {qCode: 2,display: [1,1,0,1], prob: 0.3},
+        {qCode: 3,display: [1,0,1,1], prob: 0.3}
+    ];
 
     var questionCounter = 0;
     var sectionCounter = 0;
@@ -183,18 +200,62 @@
         return output
     }
 
+    var sequence = questionCodes[0];
+
+    //Function to choose, probabilistically, which sequence to show
+    function chooseSequence()
+    {
+        randomNumber = Math.random();
+        console.log(randomNumber);
+        sumSoFar = 0;
+
+        //First things first - get latest prob from DB
+        var dbRefProbs = firebase.database().ref('Probs');
+
+        dbRefProbs.on('value', (response) => {
+            response.forEach(function(childResponse) {
+                let qCodesDB = childResponse.val().data;
+
+                //For each possible sequence, check which probability we fall under, and set the sequence
+                for (var p=0; p<qCodesDB.length; p++)
+                {
+                    //Update sum of probabilities so far
+                    sumSoFar = sumSoFar + qCodesDB[p].prob;
+                    //console.log(sumSoFar);
+
+                    //Check if we're over the random number - if so, update
+                    if (sumSoFar<=randomNumber)
+                    {
+                        sequence = qCodesDB[p+1];
+                       // console.log(sequence);
+                    }
+
+               }
+
+               //Return
+               console.log('final sequence')
+               console.log(sequence);
+
+            });
+        });
+    }
+
     //Variable to store data:
-    dataReturn = []
+    emailVal = '';
+    dataReturn = [];
 
     //Set code to run once page is loaded
     $(document).ready(function() {
+
+        //Prepare things to display:
         var pageStuff = document.getElementById('Rest');
-        //q = displayQuestion(1,part1.questions[0]);
-        //s = displaySection(1,part2);
-        t = displayAll(parts);
-        pageStuff.innerHTML = pageStuff.innerHTML + t;
+        pageContent = displayAll(parts);
+        pageStuff.innerHTML = pageStuff.innerHTML + pageContent;
 
         console.log(pageStuff.innerHTML);
+
+        //Figure out the sequence
+        chooseSequence();
 
         //All the action starts here!
 
@@ -203,10 +264,24 @@
         $('.section').hide();
         $('.finished').hide();
 
-        //Display the first only to start with
-        $('.section0').show();
-        $('.question0').show();
+        //Start with grabbing email for authentication purposes:
+        $('.emailForm').on('submit', function(e){
+            //Prevent page from refreshing
+            e.preventDefault();
 
+            //Grab email:
+            emailVal = $('input').val();
+            console.log(emailVal);
+
+            //Hide email section
+            $('.enterEmail').hide();
+            
+            //Display the first only to start with
+            $('.section0').show();
+            $('.question0').show();
+        });
+
+        
         //Keep track of what's been answered
         var clicked = 0;
         var questionsInSection = 0;
@@ -249,6 +324,8 @@
                 }
 
                 //Check if there is a next question
+                const numAnswered = clicked;
+                //console.log(numAnswered);
                 clicked++;
                 nextQuestion = '.question'+clicked;
 
@@ -260,21 +337,28 @@
 
                     //Also push it to Firebase!
                     var dbRef = firebase.database().ref('Results');
-                    dbRef.push(dataReturn);
+                    
+                    //Create result item:
+                    result = {
+                        email : emailVal,
+                        answers : dataReturn,
+                        qSequence : sequence
+                    };
+
+                    dbRef.push(result);
+
+                    //NOTE!!!!
+                    //We can do stuff HERE to manipulate probability distributions of future sequences
+                    var dbRefProbs = firebase.database().ref('Probs');
+                    //add a set, etc.
 
                     foundNextQuestion = true;
                 }
 
-                //Otherwise, grab the corresponding probability for the next question:
+                //Otherwise, check whether or not we display next question:
                 else
                 {
-                    currentProb = parts[sectionsPassed].probs[questionsInSection];
-            
-                    //Generate a random number
-                    randomNumber = Math.random();
-                
-                    //Now, probabilistically, if we're at a success we'll display next question and exit loop
-                    if(randomNumber <= currentProb)
+                    if(sequence.display[clicked] == 1)
                     {
                         $(currentQuestion).hide();
                         $(nextQuestion).show();
