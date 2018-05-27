@@ -1,6 +1,7 @@
 <!--HTML-->
 
 <html>
+    <image src='oxweb-logo.gif'
   <!--CSS-->
   <link rel="stylesheet" href="Styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -201,6 +202,7 @@
     }
 
     var sequence = questionCodes[0];
+    var accesses = 1;
 
     //Function to choose, probabilistically, which sequence to show
     function chooseSequence()
@@ -213,8 +215,11 @@
         var dbRefProbs = firebase.database().ref('Probs');
 
         dbRefProbs.on('value', (response) => {
-            response.forEach(function(childResponse) {
-                let qCodesDB = childResponse.val().data;
+           // response.forEach(function(childResponse) {
+                let qCodesDB = response.val().data;
+                accesses = response.val().accessCount;
+                console.log(qCodesDB);
+                console.log('Accesses: '+accesses);
 
                 //For each possible sequence, check which probability we fall under, and set the sequence
                 for (var p=0; p<qCodesDB.length; p++)
@@ -236,7 +241,7 @@
                console.log('final sequence')
                console.log(sequence);
 
-            });
+           // });
         });
     }
 
@@ -333,8 +338,8 @@
                 if(clicked==questionCounter)
                 {
                     $('.finished').show();
-                    console.log(dataReturn)
-
+                    console.log(dataReturn);
+                    
                     //Also push it to Firebase!
                     var dbRef = firebase.database().ref('Results');
                     
@@ -351,6 +356,19 @@
                     //We can do stuff HERE to manipulate probability distributions of future sequences
                     var dbRefProbs = firebase.database().ref('Probs');
                     //add a set, etc.
+                    
+                    
+
+                    returnData = 
+                    {
+                        name:'X',
+                        data:questionCodes,
+                        accessCount:accesses+1
+                    };
+                    console.log(returnData);
+
+                    dbRefProbs.set(returnData);   
+
 
                     foundNextQuestion = true;
                 }
